@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'Portal',
-    'Site',
 ]
 
 MIDDLEWARE = [

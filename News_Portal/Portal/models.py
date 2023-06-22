@@ -45,7 +45,10 @@ class Post(models.Model):
         self.save()
 
     def preview(self):
-        return f'{self.text[:124]}...'
+        return f'{self.text[:64]}...'
+
+    def __str__(self):
+        return f'{self.title}: {self.text}'
 
 
 class PostCategory(models.Model):
