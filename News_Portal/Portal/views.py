@@ -1,4 +1,5 @@
-from django.views.generic import ListView, DetailView, CreateView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post, Category
 from .filters import ProductFilter
 from .forms import PostForm
@@ -28,7 +29,42 @@ class PostDetail(DetailView):
     context_object_name = 'post'
 
 
-class PostCreate(CreateView):
+class NewsCreate(CreateView):
     form_class = PostForm
     model = Post
-    template_name = 'post_edit.html'
+    template_name = 'news_edit.html'
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.type = 'news'
+        return super().form_valid(form)
+
+
+class ArticleCreate(CreateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'article_edit.html'
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.type = 'post'
+        return super().form_valid(form)
+
+
+class NewsUpdate(UpdateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'news_edit.html'
+
+
+class ArticleUpdate(UpdateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'article_edit.html'
+
+
+class PostDelete(DeleteView):
+    model = Post
+    template_name = 'post_delete.html'
+    success_url = reverse_lazy('post_list')
+

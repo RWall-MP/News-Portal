@@ -9,6 +9,9 @@ class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
 
+    def __str__(self):
+        return f'{self.user}'
+
     def update_rating(self):
         post_rate = Post.objects.filter(author_id=self.pk).aggregate(sum_post=Coalesce(Sum('rating') * 3, 0))['sum_post']
         comments_rate = Comment.objects.filter(user_id=self.user).aggregate(sum_comment=Coalesce(Sum('rating'), 0))['sum_comment']
