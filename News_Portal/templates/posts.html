@@ -20,6 +20,7 @@ posts
     {% endfor %}
 
     {% if posts %}
+    <a href="news/create/">Создать запись</a>
     <table>
         <tr>
             <td>Название</td>
@@ -31,6 +32,8 @@ posts
             <td>{{ post.title }}</td>
             <td>{{ post.time_in }}</td>
             <td>{{ post.text|truncatechars:20 }}</td>
+            <td><a href="news/{{ post.pk }}/update/">Изменить</a></td>
+            <td><a href="news/{{ post.pk }}/delete/">Удалить</a></td>
         </tr>
         {% endfor %}
     </table>

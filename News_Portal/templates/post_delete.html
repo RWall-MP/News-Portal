@@ -7,5 +7,6 @@
     {% csrf_token %}
     <p>Удалить публикацию '{{ object.title }}'?</p>
     <input type="submit" value="УДАЛИТЬ"/>
+    <input type="submit" value="ОТМЕНА" href="/news"/>
 </form>
 {% endblock content %}
