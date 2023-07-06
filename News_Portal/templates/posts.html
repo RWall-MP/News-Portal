@@ -18,9 +18,11 @@ posts
     {% for obj in filter.qs %}
         {{ obj.title }} - ${{ obj.category }}<br />
     {% endfor %}
-
+    <hr>
+        {% if perms.Portal.add_post %}
+            <a href="{% url 'news_create' %}">Создать запись</a>
+        {% endif %}
     {% if posts %}
-    <a href="news/create/">Создать запись</a>
     <table>
         <tr>
             <td>Название</td>
@@ -32,8 +34,12 @@ posts
             <td>{{ post.title }}</td>
             <td>{{ post.time_in }}</td>
             <td>{{ post.text|truncatechars:20 }}</td>
-            <td><a href="news/{{ post.pk }}/update/">Изменить</a></td>
-            <td><a href="news/{{ post.pk }}/delete/">Удалить</a></td>
+            {% if perms.Portal.change_post %}
+                <td><a href="{% url 'news_update' pk=post.id %}">Изменить</a></td>
+            {% endif %}
+            {% if perms.Portal.delete_post %}
+                <td><a href="{% url 'post_delete' post.id %}">Удалить</a></td>
+            {% endif %}
         </tr>
         {% endfor %}
     </table>

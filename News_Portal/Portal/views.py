@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Post, Category
 from .filters import ProductFilter
 from .forms import PostForm
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
 class PostsList(Category, ListView):
@@ -29,7 +30,8 @@ class PostDetail(DetailView):
     context_object_name = 'post'
 
 
-class NewsCreate(CreateView):
+class NewsCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('Portal.add_post',)
     form_class = PostForm
     model = Post
     template_name = 'news_edit.html'
@@ -40,7 +42,8 @@ class NewsCreate(CreateView):
         return super().form_valid(form)
 
 
-class ArticleCreate(CreateView):
+class ArticleCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('Portal.add_post',)
     form_class = PostForm
     model = Post
     template_name = 'article_edit.html'
@@ -51,20 +54,22 @@ class ArticleCreate(CreateView):
         return super().form_valid(form)
 
 
-class NewsUpdate(UpdateView):
+class NewsUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('Portal.change_post',)
     form_class = PostForm
     model = Post
     template_name = 'news_edit.html'
 
 
-class ArticleUpdate(UpdateView):
+class ArticleUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('Portal.change_post',)
     form_class = PostForm
     model = Post
     template_name = 'article_edit.html'
 
 
-class PostDelete(DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('Portal.delete_post',)
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
-
