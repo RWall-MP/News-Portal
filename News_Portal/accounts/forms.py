@@ -1,12 +1,19 @@
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 
 
-class SignUpForm(UserCreationForm):
-    email = forms.EmailField(label='Email')
-    first_name = forms.CharField(label='Имя')
-    second_name = forms.CharField(label='Фамилия')
+class CustomSignupForm(SignupForm):
+    def save(self, request):
+        user = super().save(request)
+
+        send_mail(
+            subject='Добро пожаловать на наш новостной портал!',
+            message=f'{user.username}, вы успешно зарегистрировались!',
+            from_email=None,
+            recipient_list=[user.email],
+        )
+        return user
 
     class Meta:
         model = User
