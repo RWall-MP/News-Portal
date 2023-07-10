@@ -161,4 +161,10 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = 'r.wall.post@yandex.ru'
 
+EMAIL_SUBJECT_PREFIX = 'NEWS PORTAL'
+SERVER_EMAIL = 'r.wall.post@yandex.ru'
+MANAGERS = (
+    ('my.post.005.rewan', 'my.post.005.rewan@gmail.com'),
+)
+
 SITE_ID = 1
