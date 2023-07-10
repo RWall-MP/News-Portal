@@ -149,7 +149,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -161,7 +162,7 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = 'r.wall.post@yandex.ru'
 
-EMAIL_SUBJECT_PREFIX = 'NEWS PORTAL'
+EMAIL_SUBJECT_PREFIX = '[NEWS PORTAL] '
 SERVER_EMAIL = 'r.wall.post@yandex.ru'
 MANAGERS = (
     ('my.post.005.rewan', 'my.post.005.rewan@gmail.com'),
