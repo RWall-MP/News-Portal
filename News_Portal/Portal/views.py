@@ -1,13 +1,10 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Category, Subscription
+from .models import Post, Category
 from .filters import ProductFilter
 from .forms import PostForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.db.models import Exists, OuterRef
+from django.shortcuts import get_object_or_404
 
 
 class PostsList(Category, ListView):
@@ -79,32 +76,18 @@ class PostDelete(PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('post_list')
 
 
-@login_required
-@csrf_protect
-def subscriptions(request):
-    if request.method == 'POST':
-        category_id = request.POST.get('category_id')
-        category = Category.objects.get(id=category_id)
-        action = request.POST.get('action')
+class CategoryListView(ListView):
+    model = Post
+    template_name = 'category_list.html'
+    context_object_name = 'category_posts_list'
 
-        if action == 'subscribe':
-            Subscription.objects.create(user=request.user, category=category)
-        elif action == 'unsubscribe':
-            Subscription.objects.filter(
-                user=request.user,
-                category=category,
-            ).delete()
+    def get_queryset(self):
+        self.category = get_object_or_404(Category, id=self.kwargs['pk'])
+        queryset = Post.objects.filter(category=self.category).order_by('-time_in')
+        return queryset
 
-    categories_with_subscriptions = Category.objects.annotate(
-        user_subscribed=Exists(
-            Subscription.objects.filter(
-                user=request.user,
-                category=OuterRef('pk'),
-            )
-        )
-    ).order_by('category_name')
-    return render(
-        request,
-        'subscriptions.html',
-        {'categories': categories_with_subscriptions},
-    )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
+        context['category'] = self.category
+        return context
