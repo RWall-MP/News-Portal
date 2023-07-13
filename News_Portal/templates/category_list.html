@@ -8,31 +8,39 @@ posts
 {% endblock title %}
 
 {% block content %}
-{#    {% if is_not_subscriber %}
-<p class="text-center"><a href="{ }" class="btn btn-secondary btn-sm">Подписаться</a></p>
-{% endif %}
-#}    <h1>Все публикации</h1>
+    {% if is_not_subscriber %}
+        <p class="text-center"><a href="{% url 'subscribe' category.id %}" class="btn btn-secondary btn-sm">Подписаться</a></p>
+    {% else %}
+        <p class="text-center"><a href="{% url 'unsubscribe' category.id %}" class="btn btn-secondary btn-sm">Отписаться</a></p>
+    {% endif %}
+    <h1>Все публикации</h1>
+
     <form action="" method="get">
         {{ filterset.form.as_p }}
-
         <br>
         <input type="submit" value="Найти" />
     </form>
+
     {% for obj in filter.qs %}
         {{ obj.title }} - ${{ obj.category }}<br />
     {% endfor %}
+
     <hr>
+
         {% if perms.Portal.add_post %}
             <a href="{% url 'news_create' %}">Создать запись</a>
         {% endif %}
-    {% if posts %}
+
+    {% if category_posts_list %}
         <table>
+
             <tr>
                 <td>Дата публикации</td>
                 <td>Название</td>
                 <td>Категория</td>
                 <td>Содержание</td>
             </tr>
+
             {% for post in category_posts_list %}
             <tr>
                 <td>{{ post.time_in }}</td>
@@ -51,6 +59,7 @@ posts
                 {% endif %}
             </tr>
             {% endfor %}
+
         </table>
 
     {% else %}

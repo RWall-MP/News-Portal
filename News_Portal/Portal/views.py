@@ -1,10 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post, Category
 from .filters import ProductFilter
 from .forms import PostForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 
 
 class PostsList(Category, ListView):
@@ -88,6 +89,32 @@ class CategoryListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
+#        context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
+
+        if self.request.user not in self.category.subscribers.all():
+            context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
+            print('1')
+        else:
+            context['is_subscriber'] = self.request.user in self.category.subscribers.all()
+            print('2')
+
         context['category'] = self.category
         return context
+
+@login_required
+def subscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribers.add(user)
+
+    message = 'Оформлена рассылка на категорию новостей'
+    return render(request, 'subscribe.html', {'category': category, 'message': message})
+
+@login_required
+def unsubscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribers.remove(user)
+
+    message = 'Отменена рассылка новостей категории'
+    return render(request, 'subscribe.html', {'category': category, 'message': message})
