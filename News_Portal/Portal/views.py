@@ -1,7 +1,9 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import OuterRef, Exists
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Category
+from .models import Post, Category, Subscribtion
 from .filters import ProductFilter
 from .forms import PostForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -89,7 +91,7 @@ class CategoryListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-#        context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
+        #        context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
 
         if self.request.user not in self.category.subscribers.all():
             context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
@@ -101,6 +103,7 @@ class CategoryListView(ListView):
         context['category'] = self.category
         return context
 
+
 @login_required
 def subscribe(request, pk):
     user = request.user
@@ -110,6 +113,7 @@ def subscribe(request, pk):
     message = 'Оформлена рассылка на категорию новостей'
     return render(request, 'subscribe.html', {'category': category, 'message': message})
 
+
 @login_required
 def unsubscribe(request, pk):
     user = request.user
@@ -118,3 +122,34 @@ def unsubscribe(request, pk):
 
     message = 'Отменена рассылка новостей категории'
     return render(request, 'subscribe.html', {'category': category, 'message': message})
+
+
+@login_required
+@csrf_protect
+def subscriptions(request):
+    if request.method == 'POST':
+        category_id = request.POST.get('category_id')
+        category = Category.objects.get(id=category_id)
+        action = request.POST.get('action')
+
+        if action == 'subscribe':
+            Subscribtion.objects.create(user=request.user, category=category)
+        elif action == 'unsubscribe':
+            Subscribtion.objects.filter(
+                user=request.user,
+                category=category,
+            ).delete()
+
+    categories_with_subscriptions = Category.objects.annotate(
+        user_subscribed=Exists(
+            Subscribtion.objects.filter(
+                user=request.user,
+                category=OuterRef('pk')
+            )
+        )
+    ).order_by('name')
+    return render(
+        request,
+        'subscriptions.html',
+        {'categories': categories_with_subscriptions}
+    )
