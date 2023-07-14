@@ -1,7 +1,9 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import OuterRef, Exists
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Category
+from .models import Post, Category, Subscribtion
 from .filters import ProductFilter
 from .forms import PostForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
