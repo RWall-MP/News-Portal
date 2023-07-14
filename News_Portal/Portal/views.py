@@ -122,34 +122,3 @@ def unsubscribe(request, pk):
 
     message = 'Отменена рассылка новостей категории'
     return render(request, 'subscribe.html', {'category': category, 'message': message})
-
-
-@login_required
-@csrf_protect
-def subscriptions(request):
-    if request.method == 'POST':
-        category_id = request.POST.get('category_id')
-        category = Category.objects.get(id=category_id)
-        action = request.POST.get('action')
-
-        if action == 'subscribe':
-            Subscribtion.objects.create(user=request.user, category=category)
-        elif action == 'unsubscribe':
-            Subscribtion.objects.filter(
-                user=request.user,
-                category=category,
-            ).delete()
-
-    categories_with_subscriptions = Category.objects.annotate(
-        user_subscribed=Exists(
-            Subscribtion.objects.filter(
-                user=request.user,
-                category=OuterRef('pk')
-            )
-        )
-    ).order_by('name')
-    return render(
-        request,
-        'subscriptions.html',
-        {'categories': categories_with_subscriptions}
-    )
