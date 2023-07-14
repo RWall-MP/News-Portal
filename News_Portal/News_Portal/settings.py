@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'Portal',
+    'Portal.apps.PortalConfig',
     'django_filters',
 
     'allauth',
@@ -156,6 +156,7 @@ EMAIL_HOST_PASSWORD = 'omclbpojfrtsgbyf'
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = 'r.wall.post@yandex.ru'
+SITE_URL = 'http://127.0.0.1:8000'
 
 EMAIL_SUBJECT_PREFIX = '[NEWS PORTAL] '
 SERVER_EMAIL = 'r.wall.post@yandex.ru'
