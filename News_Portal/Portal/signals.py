@@ -15,16 +15,16 @@ def send_notifications(preview, pk, title, subscribers):
             'link': f'{settings.SITE_URL}/news/{pk}',
         }
     )
+    for email in subscribers:
+        msg = EmailMultiAlternatives(
+            subject=title,
+            body='',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[email],
+        )
 
-    msg = EmailMultiAlternatives(
-        subject=title,
-        body='',
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=subscribers,
-    )
-
-    msg.attach_alternative(html_context, 'text/html')
-    msg.send()
+        msg.attach_alternative(html_context, 'text/html')
+        msg.send()
 
 @receiver(m2m_changed, sender=PostCategory)
 def notify_about_new_post(sender, instance, **kwargs):
