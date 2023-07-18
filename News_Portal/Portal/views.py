@@ -3,7 +3,7 @@ from django.db.models import OuterRef, Exists
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Category, Subscribtion
+from .models import Post, Category
 from .filters import ProductFilter
 from .forms import PostForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
