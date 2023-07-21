@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'Portal.apps.PortalConfig',
     'django_filters',
+    'django_apscheduler',
 
     'allauth',
     'allauth.account',
