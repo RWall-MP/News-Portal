@@ -165,4 +165,12 @@ MANAGERS = (
     ('my.post.005.rewan', 'my.post.005.rewan@gmail.com'),
 )
 
+CELERY_BROKER_URL = 'redis://default:TvY1SlUNRBfwPd9eIvFvebKgZlGeXrpg' \
+                    '@redis-12967.c304.europe-west1-2.gce.cloud.redislabs.com:12967'
+CELERY_RESULT_BACKEND = 'redis://default:TvY1SlUNRBfwPd9eIvFvebKgZlGeXrpg' \
+                    '@redis-12967.c304.europe-west1-2.gce.cloud.redislabs.com:12967'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
 SITE_ID = 1
