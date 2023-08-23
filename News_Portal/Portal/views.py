@@ -1,13 +1,14 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import OuterRef, Exists
+from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.views.decorators.csrf import csrf_protect
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post, Category
 from .filters import ProductFilter
 from .forms import PostForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import get_object_or_404, render
+from Portal.tasks import
 
 
 class PostsList(Category, ListView):
@@ -43,6 +44,7 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.type = 'news'
+
         return super().form_valid(form)
 
 
@@ -122,3 +124,8 @@ def unsubscribe(request, pk):
 
     message = 'Отменена рассылка новостей категории'
     return render(request, 'subscribe.html', {'category': category, 'message': message})
+
+
+class IndexView(View):
+    def get(self, request):
+
